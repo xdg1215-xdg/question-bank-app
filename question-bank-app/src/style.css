@@ -1,0 +1,4 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #f0f4ff; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+button:active { opacity: 0.85; }
+select { appearance: none; -webkit-appearance: none; }
