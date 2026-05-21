@@ -39,12 +39,12 @@ jobs:
           cd question-bank-app
           npm run build
 
-     - name: Add Android platform
- run: |
- cd question-bank-app
- npm install @capacitor/cli @capacitor/core @capacitor/android
- npx cap add android || echo "Android platform already exists, skipping"
- npx cap sync android
+      - name: Add Android platform
+        run: |
+          cd question-bank-app
+          npm install @capacitor/cli @capacitor/core @capacitor/android
+          npx cap add android || echo "Android platform already exists"
+          npx cap sync android
 
       - name: Build debug APK
         run: |
