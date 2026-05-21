@@ -9,52 +9,53 @@ on:
 jobs:
  build:
  runs-on: ubuntu-latest
+ timeout-minutes: 30
 
  steps:
- - name: Checkout
+ - name: Checkout code
  uses: actions/checkout@v4
 
- - name: Setup Node.js
+ - name: Setup Node.js 20
  uses: actions/setup-node@v4
  with:
  node-version: '20'
- cache: 'npm'
- cache-dependency-path: question-bank-app/package-lock.json
 
- - name: Setup Java
+ - name: Setup Java 17
  uses: actions/setup-java@v4
  with:
  distribution: 'temurin'
  java-version: '17'
 
  - name: Setup Android SDK
- uses: android-actions/setup-android@v2
+ run: |
+ brew install --cask android-sdk
+ echo "ANDROID_HOME=/usr/local/share/android-sdk" >> $GITHUB_ENV
+ echo "ANDROID_SDK_ROOT=/usr/local/share/android-sdk" >> $GITHUB_ENV
 
  - name: Install dependencies
- working-directory: question-bank-app
- run: npm ci
-
- - name: Add Android platform
- working-directory: question-bank-app
- run: npx cap add android
-
- - name: Sync web assets to Android
- working-directory: question-bank-app
- run: npx cap sync android
+ run: |
+ cd question-bank-app
+ npm install
 
  - name: Build web app
- working-directory: question-bank-app
- run: npm run build
+ run: |
+ cd question-bank-app
+ npm run build
 
- - name: Sync to Android (after build)
- working-directory: question-bank-app
- run: npx cap copy android
+ - name: Add Android platform
+ run: |
+ cd question-bank-app
+ npm install @capacitor/cli @capacitor/core @capacitor/android
+ npx cap add android
+ npx cap sync android
 
  - name: Build debug APK
- working-directory: question-bank-app/android
- run: ./gradlew assembleDebug
+ run: |
+ cd question-bank-app/android
+ chmod +x ./gradlew
+ ./gradlew assembleDebug --stacktrace
 
- - name: Upload APK
+ - name: Upload APK artifact
  uses: actions/upload-artifact@v4
  with:
  name: question-bank-apk
