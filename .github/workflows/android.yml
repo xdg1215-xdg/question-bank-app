@@ -1,60 +1,60 @@
-ame: Build Android APK
+name: Build Android APK
 
 on:
- push:
- branches: [main]
- pull_request:
- branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
- build:
- runs-on: ubuntu-latest
- timeout-minutes: 30
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
 
- steps:
- - name: Checkout code
- uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
- - name: Setup Node.js 20
- uses: actions/setup-node@v4
- with:
- node-version: '20'
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
- - name: Setup Java 17
- uses: actions/setup-java@v4
- with:
- distribution: 'temurin'
- java-version: '17'
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
- - name: Setup Android SDK
- uses: android-actions/setup-android@v3
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
- - name: Install dependencies
- run: |
- cd question-bank-app
- npm install
+      - name: Install dependencies
+        run: |
+          cd question-bank-app
+          npm install
 
- - name: Build web app
- run: |
- cd question-bank-app
- npm run build
+      - name: Build web app
+        run: |
+          cd question-bank-app
+          npm run build
 
- - name: Add Android platform
- run: |
- cd question-bank-app
- npm install @capacitor/cli @capacitor/core @capacitor/android
- npx cap add android
- npx cap sync android
+      - name: Add Android platform
+        run: |
+          cd question-bank-app
+          npm install @capacitor/cli @capacitor/core @capacitor/android
+          npx cap add android
+          npx cap sync android
 
- - name: Build debug APK
- run: |
- cd question-bank-app/android
- chmod +x ./gradlew
- ./gradlew assembleDebug
+      - name: Build debug APK
+        run: |
+          cd question-bank-app/android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
 
- - name: Upload APK artifact
- uses: actions/upload-artifact@v4
- with:
- name: question-bank-apk
- path: question-bank-app/android/app/build/outputs/apk/debug/app-debug.apk
- retention-days: 7
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: question-bank-apk
+          path: question-bank-app/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
